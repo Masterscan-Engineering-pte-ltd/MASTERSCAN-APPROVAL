@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MasterScan</title>
+    <!-- Google Fonts Import -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF4B76;
+            --primary-dark: #E63E64;
+            --secondary: #4B84FF;
+            --accent: #8b5cf6;
+            --background: #F5F6FA;
+            --surface: #FFFFFF;
+            --text: #2D3436;
+            --text-muted: #636E72;
+            --success: #10b981;
+            --error: #FF4B76;
+            --border: #F0F0F0;
+            --radius-lg: 2.5rem;
+            --radius-md: 1rem;
+            --shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+            --font-main: 'Outfit', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: transparent;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .nav-pills {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 1).0;
+            background: var(--surface);
+            padding: 0.4rem;
+            border-radius: 999px;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1.25rem;
+            border-radius: 999px;
+        }
+
+        .nav-btn.active {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(75, 132, 255, 0.3);
+        }
+
+        /* Sections */
+        section {
+            display: none;
+            padding-top: 100px;
+            padding-bottom: 50px;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Home Page Layout */
+        .hero {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .welcome-text {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #777;
+            letter-spacing: 5px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .master-scan-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .master {
+            color: var(--secondary);
+            font-size: 4rem;
+            font-weight: 800;
+        }
+
+        .scan {
+            color: #f44336;
+            font-size: 4rem;
+            font-weight: 800;
+        }
+
+        .main-logo {
+            height: 120px;
+            width: auto;
+            object-fit: contain;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .portal-btns {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .portal-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 1.25rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: white;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .portal-btn.po {
+            background: var(--primary);
+            box-shadow: 0 10px 20px -5px rgba(255, 75, 118, 0.4);
+        }
+
+        .portal-btn.pay {
+            background: #2f4e8d;
+            box-shadow: 0 10px 20px -5px rgba(47, 78, 141, 0.4);
+        }
+
+        .portal-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Forms */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .title-group {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title-group h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .title-group p {
+            color: var(--text-muted);
+        }
+
+        .form-card {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .form-subtitle {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        @media(max-width: 600px) {
+            .row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        .label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .input,
+        .select,
+        .textarea {
+            width: 100%;
+            padding: 0.9rem 1.25rem;
+            border: 2px solid #E0E4F0;
+            border-left: 4px solid var(--secondary);
+            background: #FFFFFF;
+            border-radius: 0.75rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            resize: vertical;
+        }
+
+        .textarea {
+            min-height: 140px;
+        }
+
+        .input:focus,
+        .select:focus,
+        .textarea:focus {
+            outline: none;
+            background: white;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(75, 132, 255, 0.1);
+        }
+
+        .request-item {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .item-number {
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            display: block;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .remove-item {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .add-row-btn {
+            background: #fff;
+            border: 2px dashed #ddd;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            color: var(--secondary);
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .add-row-btn:hover {
+            border-color: var(--secondary);
+            background: #f0f6ff;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 1.25rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -5px rgba(255, 75, 118, 0.4);
+        }
+
+        /* Attachment UI */
+        .attachment-container {
+            background: #F1F4F9;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 0.5rem;
+        }
+
+        .actual-file-input {
+            display: none;
+        }
+
+        .custom-file-btn {
+            background: #f8f9fa;
+            border: 1px solid #767676;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .file-status {
+            font-size: 0.9rem;
+            color: #2D3436;
+            font-weight: 600;
+        }
+
+        .file-helper {
+            font-size: 0.8rem;
+            color: #636E72;
+            margin-top: 5px;
+        }
+
+        .file-list-item {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin: 5px 5px 0 0;
+            border: 1px solid #ddd;
+        }
+
+        .file-list-item span {
+            margin-left: 8px;
+            color: #ff4b76;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+
+        /* Status Check Table */
+        .status-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        }
+
+        .status-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1.4rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .badge-pending {
+            background: #fff8e1;
+            color: #ffab00;
+        }
+
+        .badge-approved {
+            background: #e6f7ef;
+            color: #34a853;
+        }
+
+        .badge-rejected {
+            background: #fee7e7;
+            color: #ea4335;
+        }
+
+        .badge-rejected {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .vote-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            border-top: 1px solid #f9f9f9;
+            padding-top: 0.5rem;
+        }
+
+        .attachment-pill {
+            display: inline-flex;
+            align-items: center;
+            background: #FF4B760D;
+            /* Very light pink background */
+            color: #FF4B76;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-decoration: none;
+            margin-top: 8px;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .attachment-pill:hover {
+            background: #FF4B761A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 75, 118, 0.1);
+        }
+
+        .highlight {
+            background: #FF4B762A;
+            color: #FF4B76;
+            padding: 0 4px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        /* Loader */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <nav>
+        <div class="logo-text" onclick="showSection('home-section')">Request Form</div>
+        <div class="nav-pills">
+            <button class="nav-btn" data-target="home-section" onclick="showSection('home-section')">Home</button>
+            <button class="nav-btn" data-target="status-section" onclick="showSection('status-section')">Check
+                Status</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Home Section -->
+        <section id="home-section" class="active">
+            <div class="hero">
+                <div class="welcome-text">WELCOME</div>
+                <img src="logo.jpg" id="logo-img" class="main-logo" alt="Logo">
+                <div class="master-scan-container">
+                    <div class="master">MASTER<span class="scan">SCAN</span></div>
+                </div>
+                <p>Submit requests, track real-time status, and manage approvals efficiently. A powerful system built
+                    for transparency and speed.</p>
+                <div class="portal-btns">
+                    <button class="portal-btn po" onclick="showSection('po-section')">Request PO</button>
+                    <button class="portal-btn pay" onclick="showSection('payment-section')">Request Expense
+                        Payment</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PO Section -->
+        <section id="po-section">
+            <div class="title-group">
+                <h2>Submit PO Request</h2>
+                <p>Add items to your purchase order below.</p>
+            </div>
+            <form id="po-form">
+                <div class="form-card">
+                    <span class="form-subtitle">Requester Details</span>
+                    <div class="row">
+                        <div class="col">
+                            <label class="label">Requester Name</label>
+                            <input type="text" id="po-req-name" class="input" required placeholder="Full Name">
+                        </div>
+                        <div class="col">
+                            <label class="label">Requester Email Address</label>
+                            <input type="email" id="po-req-email" class="input" required placeholder="you@company.com">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="po-requests-container">
+                    <!-- PO items go here -->
+                </div>
+
+                <button type="button" class="add-row-btn" onclick="addPORequest()">+ Add Request</button>
+                <button type="submit" class="submit-btn" id="po-submit-btn">Submit PO Request</button>
+            </form>
+        </section>
+
+        <!-- Payment Section -->
+        <section id="payment-section">
+            <div class="title-group">
+                <h2>Submit Payment Request</h2>
+                <p>Add items to your expense payment below.</p>
+            </div>
+            <form id="payment-form">
+                <div class="form-card">
+                    <span class="form-subtitle">Requester Details</span>
+                    <div class="row">
+                        <div class="col">
+                            <label class="label">Requester Name</label>
+                            <input type="text" id="pay-req-name" class="input" required placeholder="Full Name">
+                        </div>
+                        <div class="col">
+                            <label class="label">Requester Email Address</label>
+                            <input type="email" id="pay-req-email" class="input" required placeholder="you@company.com">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pay-requests-container">
+                    <!-- Payment items go here -->
+                </div>
+
+                <button type="button" class="add-row-btn" onclick="addPayRequest()">+ Add Request</button>
+                <button type="submit" class="submit-btn" id="pay-submit-btn">Submit Payment Request</button>
+            </form>
+        </section>
+
+        <!-- Status Section -->
+        <section id="status-section">
+            <div id="status-header" class="hidden"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="font-size: 2rem; font-weight: 800;">Your Requests</h2>
+                <button class="nav-btn" style="background: white; border: 1px solid #ddd; padding: 0.6rem 1.5rem;"
+                    onclick="resetStatusView()">← Back</button>
+            </div>
+
+            <div class="title-group" id="status-default-title">
+                <h2>Track Status</h2>
+                <p id="status-instruction">Select the type of request you want to track.</p>
+            </div>
+
+            <!-- New Choice Screen -->
+            <div id="status-type-selector" class="portal-btns" style="margin-bottom: 50px;">
+                <button class="portal-btn po" onclick="selectStatusType('PO')">PO Status</button>
+                <button class="portal-btn pay" onclick="selectStatusType('PAY')">Expense Status</button>
+            </div>
+
+            <div id="status-search" class="form-card hidden" style="max-width:500px; margin:0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <span id="selected-type-label" class="form-subtitle" style="margin-bottom: 0;">Checking PO
+                        Status</span>
+                    <button class="nav-btn" style="font-size: 0.7rem; padding: 0.3rem 0.8rem; background: #eee;"
+                        onclick="resetStatusView()">Change Type</button>
+                </div>
+                <label class="label">Your Email</label>
+                <input type="email" id="search-email" class="input" placeholder="you@company.com">
+                <button class="submit-btn" style="margin-top:20px; width:100%;" onclick="checkStatus()">Search
+                    Requests</button>
+            </div>
+
+            <div id="status-search-container" class="hidden" style="margin-bottom: 2rem;">
+                <div
+                    style="position: relative; max-width: 100%; border-radius: 1rem; overflow: hidden; box-shadow: var(--shadow);">
+                    <input type="text" id="status-filter" class="input"
+                        style="padding-left: 3rem; border: none; height: 60px;"
+                        placeholder="Search by purpose, ID, or amount..." onkeyup="filterStatus(this.value)">
+                    <div
+                        style="position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div id="status-results" class="status-grid hidden"></div>
+        </section>
+    </div>
+
+    <script>
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('active');
+                if (b.dataset.target === id) b.classList.add('active');
+            });
+
+            if (id === 'status-section') {
+                resetStatusView();
+            }
+        }
+
+        let currentStatusType = '';
+
+        function selectStatusType(type) {
+            currentStatusType = type;
+            document.getElementById('status-type-selector').classList.add('hidden');
+            document.getElementById('status-search').classList.remove('hidden');
+            document.getElementById('status-instruction').innerText = "Enter your email to view your submitted requests.";
+            document.getElementById('selected-type-label').innerText = type === 'PO' ? "Checking PO Status" : "Checking Expense Status";
+        }
+
+        function resetStatusView() {
+            document.getElementById('status-results').classList.add('hidden');
+            document.getElementById('status-search').classList.add('hidden');
+            document.getElementById('status-header').classList.add('hidden');
+            document.getElementById('status-search-container').classList.add('hidden');
+            document.getElementById('status-default-title').classList.remove('hidden');
+            document.getElementById('status-type-selector').classList.remove('hidden');
+            document.getElementById('status-instruction').innerText = "Select the type of request you want to track.";
+        }
+
+        // PO Request Logic
+        let poCount = 0;
+        function addPORequest() {
+            poCount++;
+            const div = document.createElement('div');
+            div.className = 'request-item';
+            div.id = `po-item-${poCount}`;
+            div.innerHTML = `
+                <span class="item-number">#Request ${poCount}</span>
+                ${poCount > 1 ? `<span class="remove-item" onclick="removeEl('po-item-${poCount}')">✕ Remove</span>` : ''}
+                <div class="row">
+                    <div class="col">
+                        <label class="label">Vendor Name</label>
+                        <input type="text" class="input vendor-name" required placeholder="Ex. Tech Solutions Ltd">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="label">PO Purpose</label>
+                        <textarea class="textarea purpose" required placeholder="Describe the purpose of this PO in detail..."></textarea>
+                    </div>
+                </div>
+                <div class="item-details-container">
+                    <label class="label">Item Description and Qty</label>
+                    <div class="detail-rows">
+                        <div class="row" style="margin-bottom:0.5rem;">
+                            <div style="flex:3;"><input type="text" class="input item-desc" placeholder="Description" required></div>
+                            <div style="flex:1;"><input type="number" class="input item-qty" placeholder="Qty" required></div>
+                        </div>
+                    </div>
+                    <button type="button" class="add-row-btn" style="font-size:0.8rem; padding:0.5rem;" onclick="addDetailRow(this)">+ Add More Items</button>
+                </div>
+                <div class="attachment-container">
+                    <label class="label">Attachments</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="actual-file-input" multiple onchange="handleFileAdd(this, 'po-item-${poCount}')">
+                        <button type="button" class="custom-file-btn" onclick="this.previousElementSibling.click()">Choose Files</button>
+                        <span class="file-status">No file chosen</span>
+                    </div>
+                    <p class="file-helper">Select files (click multiple times to add more).</p>
+                    <div class="added-files-list"></div>
+                </div>
+            `;
+            document.getElementById('po-requests-container').appendChild(div);
+        }
+
+        function addDetailRow(btn) {
+            const container = btn.parentElement.querySelector('.detail-rows');
+            const row = document.createElement('div');
+            row.className = 'row';
+            row.style.marginBottom = '0.5rem';
+            row.innerHTML = `
+                <div style="flex:3;"><input type="text" class="input item-desc" placeholder="Description" required></div>
+                <div style="flex:1;"><input type="number" class="input item-qty" placeholder="Qty" required></div>
+                <div style="flex:0.1; display:flex; align-items:center;"><span style="cursor:pointer;" onclick="this.parentElement.parentElement.remove()">✕</span></div>
+            `;
+            container.appendChild(row);
+        }
+
+        // Payment Request Logic
+        let payCount = 0;
+        function addPayRequest() {
+            payCount++;
+            const div = document.createElement('div');
+            div.className = 'request-item';
+            div.id = `pay-item-${payCount}`;
+            div.innerHTML = `
+                <span class="item-number">#Request ${payCount}</span>
+                ${payCount > 1 ? `<span class="remove-item" onclick="removeEl('pay-item-${payCount}')">✕ Remove</span>` : ''}
+                <div class="row">
+                    <div class="col">
+                        <label class="label">Vendor Name</label>
+                        <input type="text" class="input vendor-name" required placeholder="Ex. Tech Solutions Ltd">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="label">Expense Purpose</label>
+                        <textarea class="textarea purpose" required placeholder="Describe the purpose of this expense..."></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="label">Amount</label>
+                        <input type="number" class="input amount" step="0.000001" required placeholder="0.000000">
+                    </div>
+                    <div class="col">
+                        <label class="label">Currency</label>
+                        <select class="select currency" onchange="toggleOtherCurrency(this)" required>
+                            <option value="SGD">SGD</option>
+                            <option value="USD">USD</option>
+                            <option value="OMR">OMR</option>
+                            <option value="EUR">EUR</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" class="input other-currency hidden" style="margin-top:0.5rem;" placeholder="Write currency">
+                    </div>
+                </div>
+                <div class="attachment-container">
+                    <label class="label">Attachments</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="actual-file-input" multiple onchange="handleFileAdd(this, 'pay-item-${payCount}')">
+                        <button type="button" class="custom-file-btn" onclick="this.previousElementSibling.click()">Choose Files</button>
+                        <span class="file-status">No file chosen</span>
+                    </div>
+                    <p class="file-helper">Select files (click multiple times to add more).</p>
+                    <div class="added-files-list"></div>
+                </div>
+            `;
+            document.getElementById('pay-requests-container').appendChild(div);
+        }
+
+        function toggleOtherCurrency(sel) {
+            const row = sel.closest('.col');
+            const other = row.querySelector('.other-currency');
+            if (sel.value === 'Other') other.classList.remove('hidden');
+            else other.classList.add('hidden');
+        }
+
+        function removeEl(id) {
+            document.getElementById(id).remove();
+            selectedFiles.delete(id);
+        }
+
+        // Additive File Logic
+        const selectedFiles = new Map();
+
+        async function handleFileAdd(input, itemId) {
+            if (!selectedFiles.has(itemId)) selectedFiles.set(itemId, []);
+            const currentFiles = selectedFiles.get(itemId);
+
+            for (let f of input.files) {
+                currentFiles.push(f);
+            }
+
+            renderFileList(itemId);
+            input.value = ""; // Reset to allow re-selection
+        }
+
+        function renderFileList(itemId) {
+            const listDiv = document.querySelector(`#${itemId} .added-files-list`);
+            const statusSpan = document.querySelector(`#${itemId} .file-status`);
+            const files = selectedFiles.get(itemId) || [];
+
+            listDiv.innerHTML = '';
+            statusSpan.innerText = files.length > 0 ? `${files.length} file(s) selected` : "No file chosen";
+
+            files.forEach((f, idx) => {
+                const item = document.createElement('div');
+                item.className = 'file-list-item';
+                item.innerHTML = `${f.name} <span onclick="removeFile('${itemId}', ${idx})">✕</span>`;
+                listDiv.appendChild(item);
+            });
+        }
+
+        function removeFile(itemId, idx) {
+            const files = selectedFiles.get(itemId);
+            files.splice(idx, 1);
+            renderFileList(itemId);
+        }
+
+        // Process stored files when submitting
+        async function getFilesPerItem(itemId) {
+            const files = selectedFiles.get(itemId) || [];
+            return await Promise.all(files.map(f => {
+                return new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve({ name: f.name, type: f.type, base64: reader.result.split(',')[1] });
+                    reader.readAsDataURL(f);
+                });
+            }));
+        }
+
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxPQfWWgyzFN8J4vOtOFMSH0Rhrv6PoB9O2gBXuNBTEI48hg4Vsz4HV9iH5Q4ZA970/exec";
+
+        async function callBackend(data) {
+            try {
+                // Use fetch for external compatibility (GitHub, etc)
+                const formData = new FormData();
+                formData.append('contents', JSON.stringify(data));
+
+                // Form a request compatible with GAS doPost(e)
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ contents: JSON.stringify(data) })
+                });
+
+                // GAS responses to POST-from-external are often redirects or opaque.
+                // However, since we return JSON, standard fetch works if GAS handles it.
+                // NOTE: GAS requires this specific format for our doPost(e)
+                const resp = await fetch(WEB_APP_URL + "?action=cors", {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                return await resp.json();
+            } catch (err) {
+                console.error("Backend Error: ", err);
+                throw new Error("Could not connect to script.");
+            }
+        }
+
+        // Simpler version for GAS doPost(e) compatibility
+        async function runGasAction(data) {
+            const finalUrl = WEB_APP_URL;
+            // We use a mock form submit to handle GAS's unique POST requirements from external sites
+            const response = await fetch(finalUrl, {
+                method: "POST",
+                body: JSON.stringify(data),
+                mode: 'no-cors' // Use no-cors to avoid pre-flight issues, though it hides JSON result
+            });
+            return { status: "success", message: "Sent successfully." };
+        }
+
+        // Real robust version using a hidden form if needed, or simple fetch if JSON is returned
+        async function callGas(actionData) {
+            const url = WEB_APP_URL;
+            return fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(actionData)
+            }).then(res => res.json());
+        }
+
+        // Form Submission Logic
+        document.getElementById('po-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('po-submit-btn');
+            btn.disabled = true; btn.innerText = "Submitting..."; showLoader(true);
+
+            try {
+                const name = document.getElementById('po-req-name').value;
+                const email = document.getElementById('po-req-email').value;
+                const items = [];
+
+                for (const el of document.querySelectorAll('#po-requests-container .request-item')) {
+                    const poItems = [];
+                    el.querySelectorAll('.detail-rows .row').forEach(r => {
+                        poItems.push({ desc: r.querySelector('.item-desc').value, qty: r.querySelector('.item-qty').value });
+                    });
+
+                    const filesArr = await getFilesPerItem(el.id);
+                    items.push({
+                        vendorName: el.querySelector('.vendor-name').value,
+                        purpose: el.querySelector('.purpose').value,
+                        items: poItems,
+                        files: filesArr
+                    });
+                }
+
+                const res = await callGas({ action: "submit_po", name, email, requests: items });
+                showLoader(false);
+                alert(res.message);
+                if (res.status === 'success') location.reload();
+                else btn.disabled = false; btn.innerText = "Submit PO Request";
+            } catch (err) {
+                showLoader(false);
+                alert("Client Error: " + err.message);
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('pay-submit-btn');
+            btn.disabled = true; btn.innerText = "Submitting..."; showLoader(true);
+
+            try {
+                const name = document.getElementById('pay-req-name').value;
+                const email = document.getElementById('pay-req-email').value;
+                const items = [];
+
+                for (const el of document.querySelectorAll('#pay-requests-container .request-item')) {
+                    const currencySel = el.querySelector('.currency');
+                    const currency = currencySel.value === 'Other' ? el.querySelector('.other-currency').value : currencySel.value;
+
+                    const filesArr = await getFilesPerItem(el.id);
+                    items.push({
+                        vendorName: el.querySelector('.vendor-name').value,
+                        purpose: el.querySelector('.purpose').value,
+                        amount: el.querySelector('.amount').value,
+                        currency: currency,
+                        files: filesArr
+                    });
+                }
+
+                const res = await callGas({ action: "submit_payment", name, email, requests: items });
+                showLoader(false);
+                alert(res.message);
+                if (res.status === 'success') location.reload();
+                else btn.disabled = false; btn.innerText = "Submit Payment Request";
+            } catch (err) {
+                showLoader(false);
+                alert("Client Error: " + err.message);
+                btn.disabled = false;
+            }
+        });
+
+        async function processFiles(files) {
+            const arr = [];
+            for (let i = 0; i < files.length; i++) {
+                const f = files[i];
+                arr.push(await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve({ name: f.name, type: f.type, base64: reader.result.split(',')[1] });
+                    reader.readAsDataURL(f);
+                }));
+            }
+            return arr;
+        }
+
+        let lastFetchedData = [];
+
+        async function checkStatus() {
+            const email = document.getElementById('search-email').value;
+            if (!email) return alert("Please enter email first");
+            showLoader(true);
+
+            try {
+                const res = await callGas({ action: "get_status", email: email });
+                showLoader(false);
+                if (res.status === 'success') {
+                    lastFetchedData = res.data;
+                    const filtered = res.data.filter(item => {
+                        const isPo = item.id.includes('PO');
+                        return currentStatusType === 'PO' ? isPo : !isPo;
+                    });
+
+                    // Show search bar and header
+                    document.getElementById('status-default-title').classList.add('hidden');
+                    document.getElementById('status-header').classList.remove('hidden');
+                    document.getElementById('status-search-container').classList.remove('hidden');
+                    document.getElementById('status-filter').value = ''; // Reset filter
+
+                    renderStatus(filtered);
+                } else alert(res.message);
+            } catch (err) {
+                showLoader(false);
+                alert("Status Check Error: " + err.message);
+            }
+        }
+
+        function renderStatus(data, searchTerm = "") {
+            const container = document.getElementById('status-results');
+            container.innerHTML = '';
+            container.classList.remove('hidden');
+            document.getElementById('status-search').classList.add('hidden');
+
+            if (data.length === 0) {
+                container.innerHTML = "<p style='grid-column:1/-1; text-align:center;'>No requests found.</p>";
+                return;
+            }
+
+            const mark = (text) => {
+                if (!searchTerm || !text) return text;
+                const regex = new RegExp(`(${searchTerm})`, "gi");
+                return text.toString().replace(regex, '<span class="highlight">$1</span>');
+            };
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'status-card';
+                const badgeClass = `badge-${item.status.toLowerCase()}`;
+
+                // Ensure we have a unique list of URLs
+                let allLinks = [...new Set(item.attachments)];
+
+                // Also extract any URLs accidentally stuck in details field if not already in list
+                let finalDetails = (item.details || "").toString();
+                const urlMatch = finalDetails.match(/https?:\/\/[^\s]+/g);
+                if (urlMatch) {
+                    urlMatch.forEach(u => {
+                        if (!allLinks.includes(u)) allLinks.push(u);
+                        finalDetails = finalDetails.replace(u, '');
+                    });
+                }
+
+                let attachmentsHtml = allLinks.map((url, i) => `
+                    <p style="margin-top: 5px; color: #333;"><b>File ${i + 1}:</b> <a href="${url}" target="_blank" style="color: #1a73e8; text-decoration: underline; font-weight: 600;">View Attachment</a></p>
+                `).join("");
+
+                let votesHtml = item.votes.map(v => {
+                    const sColor = v.status === 'Approved' ? '#34a853' : v.status === 'Rejected' ? '#ea4335' : '#ffab00';
+                    return `
+                    <div class="vote-row" style="display:flex; justify-content:space-between; margin-top:8px;">
+                        <span style="color:#555;">${v.owner}</span>
+                        <span style="font-weight:700; color:${sColor};">${v.status}</span>
+                    </div>
+                `}).join("");
+
+                card.innerHTML = `
+                    <span class="status-badge ${badgeClass}">${item.status}</span>
+                    <h5 style="margin-bottom:0.4rem; color:#aaa; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">Request ID: ${mark(item.id)}</h5>
+                    <p style="font-size:0.75rem; color:#aaa; margin-bottom: 1.5rem;">Submitted: ${new Date(item.timestamp).toLocaleDateString()}</p>
+                    
+                    <div style="margin:1rem 0; font-size: 0.95rem; line-height: 1.9; color: #333;">
+                        <p><b>Requester:</b> ${mark(item.name)}</p>
+                        <p><b>Vendor Name:</b> ${mark(item.vendor)}</p>
+                        <p><b>Purpose:</b> ${mark(item.purpose)}</p>
+                        <p><b>Items & Qty:</b> ${mark(finalDetails)}</p>
+                        
+                        <div style="margin-top: 1.2rem;">
+                            <p><b>Attachments:</b></p>
+                            ${attachmentsHtml || '<p style="color:#aaa;">No attachments</p>'}
+                        </div>
+                    </div>
+                    
+                    <div style="border-top: 1px solid #f0f0f0; margin-top: 1.8rem; padding-top: 0.6rem;">
+                        <p style="font-size:0.7rem; font-weight:700; color:#aaa; text-transform:uppercase; margin-bottom:5px;">Owners Approval</p>
+                        ${votesHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function showLoader(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
+
+        function filterStatus(val) {
+            const term = val.toLowerCase();
+            const filtered = lastFetchedData.filter(item => {
+                const isPo = item.id.includes('PO');
+                const typeMatch = currentStatusType === 'PO' ? isPo : !isPo;
+                if (!typeMatch) return false;
+
+                const searchStr = `${item.id} ${item.name} ${item.vendor} ${item.purpose} ${item.details}`.toLowerCase();
+                return searchStr.includes(term);
+            });
+            renderStatus(filtered, term);
+        }
+
+        window.onload = async () => {
+            addPORequest();
+            addPayRequest();
+
+            // Fetch logo via external call
+            try {
+                const res = await callGas({ action: "get_logo" });
+                if (res.status === 'success' && res.logo) {
+                    document.getElementById('logo-img').src = "data:image/jpeg;base64," + res.logo;
+                }
+            } catch (e) { }
+        };
+    </script>
+</body>
+
+</html>
