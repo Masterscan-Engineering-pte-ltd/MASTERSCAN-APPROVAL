@@ -1195,7 +1195,7 @@
                 const typeMatch = currentStatusType === 'PO' ? isPo : !isPo;
                 if (!typeMatch) return false;
 
-                const searchStr = `${item.id} ${item.name} ${item.vendor} ${item.purpose} ${item.details}`.toLowerCase();
+                const searchStr = `${item.id} ${item.name} ${item.vendor} ${item.department} ${item.purpose} ${item.details}`.toLowerCase();
                 return searchStr.includes(term);
             });
             renderStatus(filtered, term);
