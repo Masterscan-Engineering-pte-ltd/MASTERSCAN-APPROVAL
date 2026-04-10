@@ -738,6 +738,19 @@
                         <label class="label">Vendor Name</label>
                         <input type="text" class="input vendor-name" required placeholder="Ex. Tech Solutions Ltd">
                     </div>
+                    <div class="col">
+                        <label class="label">Department</label>
+                        <select class="select department" onchange="toggleDeptOther(this)" required>
+                            <option value="" disabled selected>Choose Department</option>
+                            <option value="UT">UT</option>
+                            <option value="RT">RT</option>
+                            <option value="PWHT">PWHT</option>
+                            <option value="PAUT">PAUT</option>
+                            <option value="Tank">Tank</option>
+                            <option value="others">others</option>
+                        </select>
+                        <input type="text" class="input other-dept hidden" style="margin-top:0.5rem;" placeholder="Type department name">
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -797,6 +810,19 @@
                         <label class="label">Vendor Name</label>
                         <input type="text" class="input vendor-name" required placeholder="Ex. Tech Solutions Ltd">
                     </div>
+                    <div class="col">
+                        <label class="label">Department</label>
+                        <select class="select department" onchange="toggleDeptOther(this)" required>
+                            <option value="" disabled selected>Choose Department</option>
+                            <option value="UT">UT</option>
+                            <option value="RT">RT</option>
+                            <option value="PWHT">PWHT</option>
+                            <option value="PAUT">PAUT</option>
+                            <option value="Tank">Tank</option>
+                            <option value="others">others</option>
+                        </select>
+                        <input type="text" class="input other-dept hidden" style="margin-top:0.5rem;" placeholder="Type department name">
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -840,6 +866,18 @@
             const other = row.querySelector('.other-currency');
             if (sel.value === 'Other') other.classList.remove('hidden');
             else other.classList.add('hidden');
+        }
+
+        function toggleDeptOther(sel) {
+            const row = sel.closest('.col');
+            const other = row.querySelector('.other-dept');
+            if (sel.value === 'others') {
+                other.classList.remove('hidden');
+                other.required = true;
+            } else {
+                other.classList.add('hidden');
+                other.required = false;
+            }
         }
 
         function removeEl(id) {
@@ -896,7 +934,7 @@
             }));
         }
 
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxPQfWWgyzFN8J4vOtOFMSH0Rhrv6PoB9O2gBXuNBTEI48hg4Vsz4HV9iH5Q4ZA970/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyrU43MHUKtUgNOksncbKs8dwlIP_Hydd2bjJ78jBx5ylXVgyJLNQ7_XNb-_sUtzDGs/exec";
 
         async function callBackend(data) {
             try {
@@ -964,9 +1002,13 @@
                         poItems.push({ desc: r.querySelector('.item-desc').value, qty: r.querySelector('.item-qty').value });
                     });
 
+                    const deptSel = el.querySelector('.department');
+                    const department = deptSel.value === 'others' ? el.querySelector('.other-dept').value : deptSel.value;
+
                     const filesArr = await getFilesPerItem(el.id);
                     items.push({
                         vendorName: el.querySelector('.vendor-name').value,
+                        department: department,
                         purpose: el.querySelector('.purpose').value,
                         items: poItems,
                         files: filesArr
@@ -999,9 +1041,13 @@
                     const currencySel = el.querySelector('.currency');
                     const currency = currencySel.value === 'Other' ? el.querySelector('.other-currency').value : currencySel.value;
 
+                    const deptSel = el.querySelector('.department');
+                    const department = deptSel.value === 'others' ? el.querySelector('.other-dept').value : deptSel.value;
+
                     const filesArr = await getFilesPerItem(el.id);
                     items.push({
                         vendorName: el.querySelector('.vendor-name').value,
+                        department: department,
                         purpose: el.querySelector('.purpose').value,
                         amount: el.querySelector('.amount').value,
                         currency: currency,
@@ -1121,8 +1167,9 @@
                     <div style="margin:1rem 0; font-size: 0.95rem; line-height: 1.9; color: #333;">
                         <p><b>Requester:</b> ${mark(item.name)}</p>
                         <p><b>Vendor Name:</b> ${mark(item.vendor)}</p>
+                        <p><b>Department:</b> ${mark(item.department)}</p>
                         <p><b>Purpose:</b> ${mark(item.purpose)}</p>
-                        <p><b>Items & Qty:</b> ${mark(finalDetails)}</p>
+                        <p><b>Items & Qty:</b> ${mark(item.details)}</p>
                         
                         <div style="margin-top: 1.2rem;">
                             <p><b>Attachments:</b></p>
