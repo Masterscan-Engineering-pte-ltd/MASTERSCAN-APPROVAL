@@ -953,7 +953,9 @@
             }));
         }
 
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxUd22IpKdvblzLkj6sXJuVufu7Aj8SYS4P4piDI1eNwtawiTVb2jLsxStrY0RCDQkO/exec";
+        // Use templated URL if available, otherwise fallback to hardcoded
+        const WEB_APP_URL = "<?= getWebAppUrl() ?>";
+        const INITIAL_EMAIL = "<?= initialEmail ?>";
 
         async function callBackend(data) {
             try {
@@ -1101,35 +1103,51 @@
 
         let lastFetchedData = [];
 
-        async function checkStatus() {
-            const email = document.getElementById('search-email').value;
+        async function checkStatus(forcedEmail = null) {
+            const emailInput = document.getElementById('search-email');
+            const email = forcedEmail || emailInput.value;
             if (!email) return alert("Please enter email first");
+            
+            if (forcedEmail) emailInput.value = forcedEmail;
+            
             showLoader(true);
-
             try {
                 const res = await callGas({ action: "get_status", email: email });
                 showLoader(false);
                 if (res.status === 'success') {
                     lastFetchedData = res.data;
+                    
+                    // If we have data, automatically pick a type if none selected
+                    if (!currentStatusType && res.data.length > 0) {
+                        currentStatusType = res.data[0].id.includes('PO') ? 'PO' : 'PAY';
+                    } else if (!currentStatusType) {
+                        currentStatusType = 'PO'; // Default fallback
+                    }
+
                     const filtered = res.data.filter(item => {
                         const isPo = item.id.includes('PO');
                         return currentStatusType === 'PO' ? isPo : !isPo;
                     });
 
-                    // Check if the current searcher is an owner by looking at votes they are listed in
+                    // Check if current searcher is an owner
                     const isOwnerOfSomething = res.data.some(item => 
                         item.votes.some(v => v.owner.trim().toLowerCase() === email.trim().toLowerCase() || v.owner.includes(email))
                     );
                     
                     if (isOwnerOfSomething) {
-                        document.getElementById('selected-type-label').innerHTML += ' <span style="background:var(--success); color:white; padding:2px 8px; border-radius:4px; font-size:0.6rem; vertical-align:middle; margin-left:5px;">OWNER VIEW</span>';
+                        const label = document.getElementById('selected-type-label');
+                        if (!label.innerHTML.includes('OWNER VIEW')) {
+                            label.innerHTML += ' <span style="background:var(--success); color:white; padding:2px 8px; border-radius:4px; font-size:0.6rem; vertical-align:middle; margin-left:5px;">OWNER VIEW</span>';
+                        }
                     }
 
-                    // Show search bar and header
+                    // UI state updates
+                    document.getElementById('status-type-selector').classList.add('hidden');
+                    document.getElementById('status-search').classList.add('hidden');
                     document.getElementById('status-default-title').classList.add('hidden');
                     document.getElementById('status-header').classList.remove('hidden');
                     document.getElementById('status-search-container').classList.remove('hidden');
-                    document.getElementById('status-filter').value = ''; // Reset filter
+                    document.getElementById('status-filter').value = ''; 
 
                     renderStatus(filtered, "", email);
                 } else alert(res.message);
@@ -1263,7 +1281,13 @@
             addPORequest();
             addPayRequest();
 
-            // Fetch logo via external call
+            // 1. Auto-handle parameters from URL (e.g. ?email=...)
+            if (INITIAL_EMAIL && INITIAL_EMAIL.trim() !== "") {
+                showSection('status-section');
+                checkStatus(INITIAL_EMAIL);
+            }
+
+            // 2. Fetch logo via external call
             try {
                 const res = await callGas({ action: "get_logo" });
                 if (res.status === 'success' && res.logo) {
