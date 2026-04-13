@@ -954,8 +954,17 @@
         }
 
         // Use templated URL if available, otherwise fallback to hardcoded
-        const WEB_APP_URL = "<?= getWebAppUrl() ?>";
-        const INITIAL_EMAIL = "<?= initialEmail ?>";
+        let WEB_APP_URL = "<?= getWebAppUrl() ?>";
+        let INITIAL_EMAIL = "<?= initialEmail ?>";
+        
+        // Local File Detection: If opened from desktop, the templated variables won't be replaced.
+        // We use a fallback URL in this case.
+        if (WEB_APP_URL.includes("<?=") || WEB_APP_URL === "") {
+            WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxUd22IpKdvblzLkj6sXJuVufu7Aj8SYS4P4piDI1eNwtawiTVb2jLsxStrY0RCDQkO/exec";
+        }
+        if (INITIAL_EMAIL.includes("<?=")) {
+            INITIAL_EMAIL = "";
+        }
 
         async function callBackend(data) {
             try {
