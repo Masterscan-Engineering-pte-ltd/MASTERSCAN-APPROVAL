@@ -457,10 +457,29 @@
             color: #ea4335;
         }
 
-        .badge-rejected {
-            background: #ffebee;
-            color: #c62828;
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 20px;
         }
+
+        .act-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .act-approve { background: #e6f7ef; color: #10b981; }
+        .act-reject { background: #fee7e7; color: #ef4444; }
+        .act-paid { background: #eef2ff; color: #2f4e8d; }
+        .act-btn:hover { filter: brightness(0.95); transform: translateY(-2px); }
 
         .vote-row {
             display: flex;
@@ -934,7 +953,7 @@
             }));
         }
 
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyrU43MHUKtUgNOksncbKs8dwlIP_Hydd2bjJ78jBx5ylXVgyJLNQ7_XNb-_sUtzDGs/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxUd22IpKdvblzLkj6sXJuVufu7Aj8SYS4P4piDI1eNwtawiTVb2jLsxStrY0RCDQkO/exec";
 
         async function callBackend(data) {
             try {
@@ -1097,13 +1116,22 @@
                         return currentStatusType === 'PO' ? isPo : !isPo;
                     });
 
+                    // Check if the current searcher is an owner by looking at votes they are listed in
+                    const isOwnerOfSomething = res.data.some(item => 
+                        item.votes.some(v => v.owner.trim().toLowerCase() === email.trim().toLowerCase() || v.owner.includes(email))
+                    );
+                    
+                    if (isOwnerOfSomething) {
+                        document.getElementById('selected-type-label').innerHTML += ' <span style="background:var(--success); color:white; padding:2px 8px; border-radius:4px; font-size:0.6rem; vertical-align:middle; margin-left:5px;">OWNER VIEW</span>';
+                    }
+
                     // Show search bar and header
                     document.getElementById('status-default-title').classList.add('hidden');
                     document.getElementById('status-header').classList.remove('hidden');
                     document.getElementById('status-search-container').classList.remove('hidden');
                     document.getElementById('status-filter').value = ''; // Reset filter
 
-                    renderStatus(filtered);
+                    renderStatus(filtered, "", email);
                 } else alert(res.message);
             } catch (err) {
                 showLoader(false);
@@ -1111,7 +1139,7 @@
             }
         }
 
-        function renderStatus(data, searchTerm = "") {
+        function renderStatus(data, searchTerm = "", viewerEmail = "") {
             const container = document.getElementById('status-results');
             container.innerHTML = '';
             container.classList.remove('hidden');
@@ -1159,6 +1187,21 @@
                     </div>
                 `}).join("");
 
+                // Check if current viewer is one of the owners and hasn't voted yet
+                let actionHtml = '';
+                const myVote = item.votes.find(v => v.owner.trim().toLowerCase() === viewerEmail.trim().toLowerCase() || v.owner.includes(viewerEmail));
+                
+                if (myVote && myVote.status === 'Pending') {
+                    const isPay = item.id.startsWith('PAY');
+                    actionHtml = `
+                        <div class="action-btns">
+                            <button class="act-btn act-approve" onclick="submitPortalVote('${item.id}', 'Approved', '${viewerEmail}')">Approve</button>
+                            <button class="act-btn act-reject" onclick="submitPortalVote('${item.id}', 'Rejected', '${viewerEmail}')">Reject</button>
+                            ${isPay ? `<button class="act-btn act-paid" onclick="submitPortalVote('${item.id}', 'Paid', '${viewerEmail}')">Paid</button>` : ''}
+                        </div>
+                    `;
+                }
+
                 card.innerHTML = `
                     <span class="status-badge ${badgeClass}">${item.status}</span>
                     <h5 style="margin-bottom:0.4rem; color:#aaa; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">Request ID: ${mark(item.id)}</h5>
@@ -1181,9 +1224,24 @@
                         <p style="font-size:0.7rem; font-weight:700; color:#aaa; text-transform:uppercase; margin-bottom:5px;">Owners Approval</p>
                         ${votesHtml}
                     </div>
+                    ${actionHtml}
                 `;
                 container.appendChild(card);
             });
+        }
+
+        async function submitPortalVote(id, decision, ownerEmail) {
+            if (!confirm(`Are you sure you want to mark ${id} as ${decision}?`)) return;
+            showLoader(true);
+            try {
+                const res = await callGas({ action: "portal_vote", id, decision, ownerEmail });
+                showLoader(false);
+                alert(res.message);
+                if (res.status === 'success') checkStatus(); // Refresh results
+            } catch (err) {
+                showLoader(false);
+                alert("Error submitting decision: " + err.message);
+            }
         }
 
         function showLoader(v) { document.getElementById('loader').style.display = v ? 'flex' : 'none'; }
