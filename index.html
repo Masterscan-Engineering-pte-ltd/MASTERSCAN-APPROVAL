@@ -571,6 +571,9 @@
             <button class="nav-btn" data-target="home-section" onclick="showSection('home-section')">Home</button>
             <button class="nav-btn" data-target="status-section" onclick="showSection('status-section')">Check
                 Status</button>
+            <div id="quota-badge" style="display: flex; align-items: center; padding: 0.5rem 1rem; font-size: 0.75rem; font-weight: 700; color: #666; background: #eee; border-radius: 999px; margin-left: 0.5rem; cursor: pointer; transition: all 0.3s;" title="Remaining Daily Email Quota" onclick="fetchQuota()">
+                <span id="quota-value">Quota: --</span>
+            </div>
         </div>
     </nav>
 
@@ -741,6 +744,41 @@
             document.getElementById('status-type-selector').classList.remove('hidden');
             document.getElementById('status-instruction').innerText = "Select the type of request you want to track.";
         }
+
+        async function fetchQuota() {
+            const badge = document.getElementById('quota-badge');
+            const valueSpan = document.getElementById('quota-value');
+            
+            valueSpan.innerText = "Quota: ...";
+            badge.style.background = "#e0e0e0";
+
+            try {
+                google.script.run
+                    .withSuccessHandler(function(quota) {
+                        valueSpan.innerText = "Quota: " + quota;
+                        if (quota < 100) {
+                            badge.style.background = "#fee7e7";
+                            badge.style.color = "#ea4335";
+                        } else {
+                            badge.style.background = "#e6f7ef";
+                            badge.style.color = "#34a853";
+                        }
+                    })
+                    .withFailureHandler(function() {
+                        valueSpan.innerText = "Quota: Err";
+                        badge.style.background = "#eee";
+                    })
+                    .getMailQuota();
+            } catch (e) {
+                valueSpan.innerText = "Quota: --";
+            }
+        }
+
+        // Initialize quota check
+        window.addEventListener('load', () => {
+             // Delay slightly to not interfere with initial load
+             setTimeout(fetchQuota, 2000);
+        });
 
         // PO Request Logic
         let poCount = 0;
@@ -953,8 +991,8 @@
             }));
         }
 
-        // Use templated URL if available, otherwise fallback to hardcoded
-        let WEB_APP_URL = "<?= getWebAppUrl() ?>";
+        // Use direct API URL for background calls (fetch)
+        let WEB_APP_URL = "<?= getDirectUrl() ?>";
         let INITIAL_EMAIL = "<?= initialEmail ?>";
         
         // Local File Detection: If opened from desktop, the templated variables won't be replaced.
@@ -1216,15 +1254,18 @@
 
                 // Check if current viewer is one of the owners and hasn't voted yet
                 let actionHtml = '';
-                const myVote = item.votes.find(v => v.owner.trim().toLowerCase() === viewerEmail.trim().toLowerCase() || v.owner.includes(viewerEmail));
+                const myVote = item.votes.find(v => v.email && v.email.trim().toLowerCase() === viewerEmail.trim().toLowerCase());
                 
                 if (myVote && myVote.status === 'Pending') {
                     const isPay = item.id.startsWith('PAY');
                     actionHtml = `
-                        <div class="action-btns">
-                            <button class="act-btn act-approve" onclick="submitPortalVote('${item.id}', 'Approved', '${viewerEmail}')">Approve</button>
-                            <button class="act-btn act-reject" onclick="submitPortalVote('${item.id}', 'Rejected', '${viewerEmail}')">Reject</button>
-                            ${isPay ? `<button class="act-btn act-paid" onclick="submitPortalVote('${item.id}', 'Paid', '${viewerEmail}')">Paid</button>` : ''}
+                        <div style="margin-top:20px; padding:15px; border-radius:12px; background:#f8fafc; border:1px dashed #3b82f6;">
+                            <p style="font-size:0.8rem; font-weight:700; color:#3b82f6; text-transform:uppercase; margin-bottom:10px; text-align:center;">Action Required</p>
+                            <div class="action-btns">
+                                <button class="act-btn act-approve" style="padding:12px;" onclick="submitPortalVote('${item.id}', 'Approved', '${viewerEmail}')">Approve</button>
+                                <button class="act-btn act-reject" style="padding:12px;" onclick="submitPortalVote('${item.id}', 'Rejected', '${viewerEmail}')">Reject</button>
+                                ${isPay ? `<button class="act-btn act-paid" style="padding:12px;" onclick="submitPortalVote('${item.id}', 'Paid', '${viewerEmail}')">Paid</button>` : ''}
+                            </div>
                         </div>
                     `;
                 }
@@ -1258,7 +1299,7 @@
         }
 
         async function submitPortalVote(id, decision, ownerEmail) {
-            if (!confirm(`Are you sure you want to mark ${id} as ${decision}?`)) return;
+            // Confirmation removed to enable one-click automatic submission
             showLoader(true);
             try {
                 const res = await callGas({ action: "portal_vote", id, decision, ownerEmail });
