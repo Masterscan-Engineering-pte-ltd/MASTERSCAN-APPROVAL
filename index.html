@@ -707,7 +707,7 @@
                 <button type="submit" class="submit-btn" id="po-submit-btn">Submit PO Request</button>
                 <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed #ddd;">
                     <p style="color: #636e72; font-size: 0.9rem; margin-bottom: 0.5rem;">Already submitted a request?</p>
-                    <a href="javascript:void(0)" onclick="showSection('status-section')" style="color: var(--secondary); font-weight: 700; text-decoration: none;">Use Secure Approval Portal</a>
+                    <a href="javascript:void(0)" onclick="openStatusWithType('PO')" style="color: var(--secondary); font-weight: 700; text-decoration: none;">Use Secure Approval Portal</a>
                 </div>
             </form>
         </section>
@@ -741,7 +741,7 @@
                 <button type="submit" class="submit-btn" id="pay-submit-btn">Submit Payment Request</button>
                 <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed #ddd;">
                     <p style="color: #636e72; font-size: 0.9rem; margin-bottom: 0.5rem;">Need to track your expenses?</p>
-                    <a href="javascript:void(0)" onclick="showSection('status-section')" style="color: #2f4e8d; font-weight: 700; text-decoration: none;">Use Secure Approval Portal</a>
+                    <a href="javascript:void(0)" onclick="openStatusWithType('PAY')" style="color: #2f4e8d; font-weight: 700; text-decoration: none;">Use Secure Approval Portal</a>
                 </div>
             </form>
         </section>
@@ -810,9 +810,14 @@
                 if (b.dataset.target === id) b.classList.add('active');
             });
 
-            if (id === 'status-section') {
+            if (id === 'status-section' && !currentStatusType) {
                 resetStatusView();
             }
+        }
+
+        function openStatusWithType(type) {
+            showSection('status-section');
+            selectStatusType(type);
         }
 
         let currentStatusType = '';
@@ -1397,23 +1402,32 @@
                     </div>
                 `}).join("");
 
-                // Check if current viewer is one of the owners and hasn't voted yet
+                // Check if current viewer is one of the owners
                 let actionHtml = '';
                 const myVote = item.votes.find(v => v.email && v.email.trim().toLowerCase() === viewerEmail.trim().toLowerCase());
                 
-                if (myVote && myVote.status === 'Pending') {
+                if (myVote) {
                     const isPay = item.id.startsWith('PAY');
-                    actionHtml = `
-                        <div style="margin-top:20px; padding:20px; border-radius:16px; background:#f0f7ff; border:2px solid #3b82f6; box-shadow:0 8px 16px rgba(59,130,246,0.1);">
-                            <p style="font-size:0.85rem; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:15px; text-align:center; letter-spacing:1px;">SECURE APPROVAL INTERFACE</p>
-                            <div class="action-btns" style="display:flex; flex-direction:column; gap:10px;">
-                                <button class="act-btn act-approve" style="padding:14px; font-weight:800; background:#10b981; color:white; font-size:1rem;" onclick="submitPortalVote('${item.id}', 'Approved', '${viewerEmail}')">APPROVE REQUEST</button>
-                                <button class="act-btn act-reject" style="padding:14px; font-weight:800; background:#ef4444; color:white; font-size:1rem;" onclick="submitPortalVote('${item.id}', 'Rejected', '${viewerEmail}')">REJECT REQUEST</button>
-                                ${isPay ? `<button class="act-btn act-paid" style="padding:14px; font-weight:800; background:#2f4e8d; color:white; font-size:1rem;" onclick="submitPortalVote('${item.id}', 'Paid', '${viewerEmail}')">MARK AS PAID</button>` : ''}
+                    const isPending = myVote.status === 'Pending';
+                    const canMarkPaid = isPay && item.status !== 'Paid' && item.status !== 'Rejected';
+                    
+                    if (isPending || canMarkPaid) {
+                        actionHtml = `
+                            <div style="margin-top:20px; padding:20px; border-radius:16px; background:#f0f7ff; border:2px solid #3b82f6; box-shadow:0 8px 16px rgba(59,130,246,0.1);">
+                                <p style="font-size:0.85rem; font-weight:800; color:#1e40af; text-transform:uppercase; margin-bottom:15px; text-align:center; letter-spacing:1px;">SECURE APPROVAL INTERFACE</p>
+                                <div class="action-btns" style="display:flex; flex-direction:column; gap:10px;">
+                                    ${isPending ? `
+                                        <button class="act-btn act-approve" style="padding:14px; font-weight:800; background:#10b981; color:white; font-size:1rem;" onclick="submitPortalVote('${item.id}', 'Approved', '${viewerEmail}')">APPROVE REQUEST</button>
+                                        <button class="act-btn act-reject" style="padding:14px; font-weight:800; background:#ef4444; color:white; font-size:1rem;" onclick="submitPortalVote('${item.id}', 'Rejected', '${viewerEmail}')">REJECT REQUEST</button>
+                                    ` : ''}
+                                    ${canMarkPaid ? `
+                                        <button class="act-btn act-paid" style="padding:14px; font-weight:800; background:#2f4e8d; color:white; font-size:1rem;" onclick="submitPortalVote('${item.id}', 'Paid', '${viewerEmail}')">${item.status === 'Approved' ? 'MARK AS PAID NOW' : 'MARK AS PAID'}</button>
+                                    ` : ''}
+                                </div>
+                                <p style="text-align:center; font-size:0.7rem; color:#64748b; margin-top:12px; font-weight:600;">Secure, authenticated session</p>
                             </div>
-                            <p style="text-align:center; font-size:0.7rem; color:#64748b; margin-top:12px; font-weight:600;">Secure, authenticated session</p>
-                        </div>
-                    `;
+                        `;
+                    }
                 }
 
                 card.innerHTML = `
