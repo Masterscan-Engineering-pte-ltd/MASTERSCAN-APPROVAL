@@ -640,8 +640,6 @@
                 <p class="modal-text">Your request has been successfully recorded and owners have been notified.</p>
                 <div class="modal-actions">
                     <button class="modal-btn btn-primary" onclick="goToMyRequests()">View in Secure Portal</button>
-                    <button id="modal-switch-btn" class="modal-btn btn-outline" onclick="switchRequestType()">Add Expense Payment</button>
-                    <button class="modal-btn btn-outline" style="background:#f8fafc;" onclick="location.reload()">Done</button>
                 </div>
             </div>
         </div>
@@ -1204,12 +1202,9 @@
             lastRequesterEmail = email;
             
             const modal = document.getElementById('success-modal');
-            const switchBtn = document.getElementById('modal-switch-btn');
             const title = document.querySelector('.modal-title');
             
             title.innerText = `${type} Submitted!`;
-            switchBtn.innerText = type === 'PO' ? "Add Expense Payment" : "Add PO Request";
-            
             modal.style.display = 'flex';
         }
 
