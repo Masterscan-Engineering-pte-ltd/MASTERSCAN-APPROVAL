@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MasterScan</title>
+    <title>SG MasterScan</title>
     <!-- Google Fonts Import -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -476,10 +476,25 @@
             transition: all 0.2s;
         }
 
-        .act-approve { background: #e6f7ef; color: #10b981; }
-        .act-reject { background: #fee7e7; color: #ef4444; }
-        .act-paid { background: #eef2ff; color: #2f4e8d; }
-        .act-btn:hover { filter: brightness(0.95); transform: translateY(-2px); }
+        .act-approve {
+            background: #e6f7ef;
+            color: #10b981;
+        }
+
+        .act-reject {
+            background: #fee7e7;
+            color: #ef4444;
+        }
+
+        .act-paid {
+            background: #eef2ff;
+            color: #2f4e8d;
+        }
+
+        .act-btn:hover {
+            filter: brightness(0.95);
+            transform: translateY(-2px);
+        }
 
         .vote-row {
             display: flex;
@@ -583,8 +598,15 @@
         }
 
         @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.8) translateY(40px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .success-icon {
@@ -600,8 +622,18 @@
             margin: 0 auto 1.5rem;
         }
 
-        .modal-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; color: #2d3436; }
-        .modal-text { color: #636e72; margin-bottom: 2rem; font-weight: 500; }
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #2d3436;
+        }
+
+        .modal-text {
+            color: #636e72;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
 
         .modal-actions {
             display: flex;
@@ -619,10 +651,26 @@
             text-decoration: none;
         }
 
-        .btn-primary { background: var(--secondary); color: white; }
-        .btn-outline { background: white; border: 2px solid #edf2f7; color: #4a5568; }
-        .btn-accent { background: #2f4e8d; color: white; }
-        .modal-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid #edf2f7;
+            color: #4a5568;
+        }
+
+        .btn-accent {
+            background: #2f4e8d;
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 
@@ -640,7 +688,9 @@
                 <p class="modal-text">Your request has been successfully recorded and owners have been notified.</p>
                 <div class="modal-actions">
                     <button class="modal-btn btn-primary" onclick="goToMyRequests()">View in Secure Portal</button>
-                    <button class="modal-btn" style="margin-top: 10px; padding: 1rem; border-radius: 12px; border: 2px solid #e2e8f0; background: #f1f5f9; color: #475569; font-weight: 700; cursor: pointer; display: block; width: 100%;" onclick="location.reload()">Done</button>
+                    <button class="modal-btn"
+                        style="margin-top: 10px; padding: 1rem; border-radius: 12px; border: 2px solid #e2e8f0; background: #f1f5f9; color: #475569; font-weight: 700; cursor: pointer; display: block; width: 100%;"
+                        onclick="location.reload()">Done</button>
                 </div>
             </div>
         </div>
@@ -652,7 +702,9 @@
             <button class="nav-btn" data-target="home-section" onclick="showSection('home-section')">Home</button>
             <button class="nav-btn" data-target="status-section" onclick="showSection('status-section')">Check
                 Status</button>
-            <div id="quota-badge" style="display: flex; align-items: center; padding: 0.5rem 1rem; font-size: 0.75rem; font-weight: 700; color: #666; background: #eee; border-radius: 999px; margin-left: 0.5rem; cursor: pointer; transition: all 0.3s;" title="Remaining Daily Email Quota" onclick="fetchQuota()">
+            <div id="quota-badge"
+                style="display: flex; align-items: center; padding: 0.5rem 1rem; font-size: 0.75rem; font-weight: 700; color: #666; background: #eee; border-radius: 999px; margin-left: 0.5rem; cursor: pointer; transition: all 0.3s;"
+                title="Remaining Daily Email Quota" onclick="fetchQuota()">
                 <span id="quota-value">Quota: --</span>
             </div>
         </div>
@@ -705,8 +757,11 @@
                 <button type="button" class="add-row-btn" onclick="addPORequest()">+ Add Request</button>
                 <button type="submit" class="submit-btn" id="po-submit-btn">Submit PO Request</button>
                 <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed #ddd;">
-                    <p style="color: #636e72; font-size: 0.9rem; margin-bottom: 0.5rem;">Already submitted a request?</p>
-                    <a href="javascript:void(0)" onclick="openStatusWithType('PO')" style="color: var(--secondary); font-weight: 700; text-decoration: none;">Use Secure Approval Portal</a>
+                    <p style="color: #636e72; font-size: 0.9rem; margin-bottom: 0.5rem;">Already submitted a request?
+                    </p>
+                    <a href="javascript:void(0)" onclick="openStatusWithType('PO')"
+                        style="color: var(--secondary); font-weight: 700; text-decoration: none;">Use Secure Approval
+                        Portal</a>
                 </div>
             </form>
         </section>
@@ -739,8 +794,10 @@
                 <button type="button" class="add-row-btn" onclick="addPayRequest()">+ Add Request</button>
                 <button type="submit" class="submit-btn" id="pay-submit-btn">Submit Payment Request</button>
                 <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed #ddd;">
-                    <p style="color: #636e72; font-size: 0.9rem; margin-bottom: 0.5rem;">Need to track your expenses?</p>
-                    <a href="javascript:void(0)" onclick="openStatusWithType('PAY')" style="color: #2f4e8d; font-weight: 700; text-decoration: none;">Use Secure Approval Portal</a>
+                    <p style="color: #636e72; font-size: 0.9rem; margin-bottom: 0.5rem;">Need to track your expenses?
+                    </p>
+                    <a href="javascript:void(0)" onclick="openStatusWithType('PAY')"
+                        style="color: #2f4e8d; font-weight: 700; text-decoration: none;">Use Secure Approval Portal</a>
                 </div>
             </form>
         </section>
@@ -842,13 +899,13 @@
         async function fetchQuota() {
             const badge = document.getElementById('quota-badge');
             const valueSpan = document.getElementById('quota-value');
-            
+
             valueSpan.innerText = "Quota: ...";
             badge.style.background = "#e0e0e0";
 
             try {
                 google.script.run
-                    .withSuccessHandler(function(quota) {
+                    .withSuccessHandler(function (quota) {
                         valueSpan.innerText = "Quota: " + quota;
                         if (quota < 100) {
                             badge.style.background = "#fee7e7";
@@ -858,7 +915,7 @@
                             badge.style.color = "#34a853";
                         }
                     })
-                    .withFailureHandler(function() {
+                    .withFailureHandler(function () {
                         valueSpan.innerText = "Quota: Err";
                         badge.style.background = "#eee";
                     })
@@ -870,8 +927,8 @@
 
         // Initialize quota check
         window.addEventListener('load', () => {
-             // Delay slightly to not interfere with initial load
-             setTimeout(fetchQuota, 2000);
+            // Delay slightly to not interfere with initial load
+            setTimeout(fetchQuota, 2000);
         });
 
         // PO Request Logic
@@ -1090,7 +1147,7 @@
         let INITIAL_EMAIL = "<?= initialEmail ?>";
         let INITIAL_ACTION = "<?= initialAction ?>";
         let INITIAL_TYPE = "<?= initialType ?>";
-        
+
         // Local File Detection: If opened from desktop, the templated variables won't be replaced.
         // We use a fallback URL in this case.
         if (WEB_APP_URL.includes("<" + "?=") || WEB_APP_URL === "") {
@@ -1201,10 +1258,10 @@
         function showSuccessModal(type, name, email) {
             lastRequestType = type;
             lastRequesterEmail = email;
-            
+
             const modal = document.getElementById('success-modal');
             const title = document.querySelector('.modal-title');
-            
+
             title.innerText = `${type} Submitted!`;
             modal.style.display = 'flex';
         }
@@ -1291,24 +1348,24 @@
             const emailInput = document.getElementById('search-email');
             const email = forcedEmail || emailInput.value;
             if (!email) return alert("Please enter email first");
-            
+
             if (forcedEmail) emailInput.value = forcedEmail;
-            
+
             showLoader(true);
             try {
                 const res = await callGas({ action: "get_status", email: email });
                 showLoader(false);
                 if (res.status === 'success') {
                     lastFetchedData = res.data;
-                    
+
                     // Priority 1: Handle deep-link type from URL/Script parameters
                     if (INITIAL_TYPE && (INITIAL_TYPE === 'PO' || INITIAL_TYPE === 'PAY')) {
                         currentStatusType = INITIAL_TYPE;
-                    } 
+                    }
                     // Priority 2: Auto-detect based on data if no specific type set yet
                     else if (!currentStatusType && res.data.length > 0) {
                         currentStatusType = res.data[0].id.includes('PO') ? 'PO' : 'PAY';
-                    } 
+                    }
                     // Priority 3: Fallback
                     else if (!currentStatusType) {
                         currentStatusType = 'PO';
@@ -1323,10 +1380,10 @@
                     });
 
                     // Check if current searcher is an owner
-                    const isOwnerOfSomething = res.data.some(item => 
+                    const isOwnerOfSomething = res.data.some(item =>
                         item.votes.some(v => v.owner.trim().toLowerCase() === email.trim().toLowerCase() || v.owner.includes(email))
                     );
-                    
+
                     if (isOwnerOfSomething) {
                         const label = document.getElementById('selected-type-label');
                         if (!label.innerHTML.includes('OWNER VIEW')) {
@@ -1340,7 +1397,7 @@
                     document.getElementById('status-default-title').classList.add('hidden');
                     document.getElementById('status-header').classList.remove('hidden');
                     document.getElementById('status-search-container').classList.remove('hidden');
-                    document.getElementById('status-filter').value = ''; 
+                    document.getElementById('status-filter').value = '';
 
                     renderStatus(filtered, "", email);
                 } else alert(res.message);
@@ -1401,12 +1458,12 @@
                 // Check if current viewer is one of the owners
                 let actionHtml = '';
                 const myVote = item.votes.find(v => v.email && v.email.trim().toLowerCase() === viewerEmail.trim().toLowerCase());
-                
+
                 if (myVote) {
                     const isPay = item.id.startsWith('PAY');
                     const isPending = myVote.status === 'Pending';
                     const canMarkPaid = isPay && item.status !== 'Paid' && item.status !== 'Rejected';
-                    
+
                     if (isPending || canMarkPaid) {
                         actionHtml = `
                             <div style="margin-top:20px; padding:20px; border-radius:16px; background:#f0f7ff; border:2px solid #3b82f6; box-shadow:0 8px 16px rgba(59,130,246,0.1);">
